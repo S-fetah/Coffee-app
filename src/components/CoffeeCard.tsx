@@ -16,7 +16,7 @@ interface CardPropTypes {
   type: string;
   price: number;
 }
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const CoffeeCard: React.FC<CardPropTypes> = ({ price, src, title, type }) => {
   return (
     <View style={styles.cardContainer}>
@@ -54,6 +54,8 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     borderRadius: 10,
     marginLeft: '4%',
+    height: (height - 50) / 3.4,
+    marginBottom: '5%',
   },
   btnStyle: {
     padding: 5,
@@ -91,6 +93,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     paddingHorizontal: 10,
     fontSize: 18,
+    fontWeight: '700',
+    marginTop: '3%',
   },
 });
 

@@ -58,14 +58,17 @@ const CoffeeList = () => {
         showsHorizontalScrollIndicator={false}
       >
         <TouchableOpacity
-          style={styles.item}
+          style={{
+            ...styles.item,
+            backgroundColor:
+              selected === 'All Coffee' ? '#C67C4E' : '#EDEDED59',
+          }}
           onPress={() => setSelected('All Coffee')}
         >
           <Text
             style={{
               ...styles.coffeeTypeText,
-              backgroundColor:
-                selected === 'All Coffee' ? '#C67C4E' : '#EDEDED59',
+              alignSelf: 'center',
               color: selected === 'All Coffee' ? 'white' : '#313131',
             }}
           >
@@ -73,14 +76,16 @@ const CoffeeList = () => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.item}
+          style={{
+            ...styles.item,
+            backgroundColor: selected === 'Machiato' ? '#C67C4E' : '#EDEDED59',
+          }}
           onPress={() => setSelected('Machiato')}
         >
           <Text
             style={{
               ...styles.coffeeTypeText,
-              backgroundColor:
-                selected === 'Machiato' ? '#C67C4E' : '#EDEDED59',
+              alignSelf: 'center',
               color: selected === 'Machiato' ? 'white' : '#313131',
             }}
           >
@@ -88,13 +93,16 @@ const CoffeeList = () => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.item}
+          style={{
+            ...styles.item,
+            backgroundColor: selected === 'Latte' ? '#C67C4E' : '#EDEDED59',
+          }}
           onPress={() => setSelected('Latte')}
         >
           <Text
             style={{
               ...styles.coffeeTypeText,
-              backgroundColor: selected === 'Latte' ? '#C67C4E' : '#EDEDED59',
+              alignSelf: 'center',
               color: selected === 'Latte' ? 'white' : '#313131',
             }}
           >
@@ -102,14 +110,16 @@ const CoffeeList = () => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.item}
+          style={{
+            ...styles.item,
+            backgroundColor: selected === 'Americano' ? '#C67C4E' : '#EDEDED59',
+          }}
           onPress={() => setSelected('Americano')}
         >
           <Text
             style={{
               ...styles.coffeeTypeText,
-              backgroundColor:
-                selected === 'Americano' ? '#C67C4E' : '#EDEDED59',
+              alignSelf: 'center',
               color: selected === 'Americano' ? 'white' : '#313131',
             }}
           >
@@ -147,24 +157,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexGrow: 0,
     paddingHorizontal: 10,
-    zIndex: 2,
+
+    height: '10%',
   },
   item: {
     width: width / 4,
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    paddingVertical: 5,
+    borderRadius: 6,
+    marginRight: 10,
   },
   coffeeType: {
     color: '#313131',
   },
   coffeeTypeText: {
     textAlign: 'center',
-    padding: 5,
-    borderRadius: 6,
+
     fontFamily: 'Sora-VariableFont_wght',
     fontSize: 14,
+    fontWeight: '600',
+    letterSpacing: 1,
   },
   coffeeList: {
-    paddingBottom: 100,
+    paddingBottom: 20,
     width: '100%',
     backgroundColor: '#f9f9f9',
     marginTop: '5%',
