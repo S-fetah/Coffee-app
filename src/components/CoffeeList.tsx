@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexGrow: 0,
     paddingHorizontal: 10,
+    zIndex: 2,
   },
   item: {
     width: width / 4,
