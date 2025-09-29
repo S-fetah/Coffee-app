@@ -8,10 +8,16 @@ import {
 } from 'react-native';
 import pic from '../assests/Image/landing.png';
 import React from 'react';
-const Landing = () => {
-  const { height, width } = useWindowDimensions();
-  console.log(height);
-  console.log(width);
+interface LandingProps {
+  onComplete: () => void;
+}
+const Landing: React.FC<LandingProps> = ({ onComplete }) => {
+  const { height } = useWindowDimensions();
+
+  const handleGetStarted = () => {
+    onComplete();
+  };
+
   return (
     <View style={styles.container}>
       <View style={{ ...styles.imgContainer, height: height / 4.2 }}>
@@ -37,7 +43,7 @@ const Landing = () => {
         you
       </Text>
 
-      <TouchableOpacity style={styles.btn}>
+      <TouchableOpacity style={styles.btn} onPress={handleGetStarted}>
         <Text style={styles.btnTxt}> Get Started</Text>
       </TouchableOpacity>
     </View>
@@ -89,7 +95,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   btn: {
-    backgroundColor: ' #C67C4E',
     width: '90%',
     bottom: '10%',
     position: 'absolute',
@@ -98,7 +103,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     left: '10%',
+    zIndex: 1,
     padding: 20,
+    backgroundColor: '#C67C4E',
   },
   btnTxt: {
     color: 'white',
