@@ -15,11 +15,23 @@ interface CardPropTypes {
   title: string;
   type: string;
   price: number;
+  onPress: (
+    name: string,
+    image: any,
+    description: string,
+    price: number,
+  ) => void;
 }
 const { width, height } = Dimensions.get('window');
-const CoffeeCard: React.FC<CardPropTypes> = ({ price, src, title, type }) => {
+const CoffeeCard: React.FC<CardPropTypes> = ({
+  price,
+  src,
+  title,
+  type,
+  onPress,
+}) => {
   return (
-    <View style={styles.cardContainer}>
+    <TouchableOpacity style={styles.cardContainer}>
       <Image source={src} style={styles.cardImg} />
       <Text style={styles.titleStyle}>{title}</Text>
       <Text style={styles.typeStyle}>{type}</Text>
@@ -33,11 +45,14 @@ const CoffeeCard: React.FC<CardPropTypes> = ({ price, src, title, type }) => {
         }}
       >
         <Text style={styles.priceStyle}>$ {price}</Text>
-        <TouchableOpacity style={styles.btnStyle}>
+        <TouchableOpacity
+          style={styles.btnStyle}
+          onPress={() => onPress(title, src, type, price)}
+        >
           <Plus size={20} color={'white'} strokeWidth={1.3} />
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

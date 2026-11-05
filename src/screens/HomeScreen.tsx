@@ -18,6 +18,9 @@ import Config from 'react-native-config';
 import { Search, Settings2 } from 'lucide-react-native';
 import hero from '../assests/Image/heroSection.png';
 import CoffeeList from '../components/CoffeeList';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackParams } from '../types/navigation';
+import { StackNavigationProp } from '@react-navigation/stack';
 type locationType = {
   country: string;
   state: string;
@@ -28,8 +31,11 @@ const defaultLocation: locationType = {
   name: '....',
   state: '....',
 };
+
+type navigationProps = StackNavigationProp<RootStackParams>;
 const HomeScreen = () => {
   const [location, setLocation] = useState<locationType>(defaultLocation);
+  const navigation = useNavigation<navigationProps>();
 
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -204,7 +210,16 @@ const HomeScreen = () => {
         />
       </View>
 
-      <CoffeeList />
+      <CoffeeList
+        onPress={(name, image, description, price) =>
+          navigation.navigate('Details', {
+            description,
+            image,
+            name,
+            price,
+          })
+        }
+      />
     </View>
   );
 };

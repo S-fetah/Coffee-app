@@ -48,7 +48,7 @@ const MainTabNavigator: React.FC = () => {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{}} />
+      <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
       <Tab.Screen name="Explore" component={ExploreScreen} />
       <Tab.Screen name="Notifications" component={NotificationScreen} />

@@ -13,11 +13,57 @@ import { CoffeePics } from '../types/constants';
 
 const { width } = Dimensions.get('window'); // screen width
 
-const CoffeeList = () => {
-  const [selected, setSelected] = useState<
-    'All Coffee' | 'Machiato' | 'Latte' | 'Americano'
-  >('All Coffee');
+type listProps = {
+  onPress: (
+    name: string,
+    image: any,
+    description: string,
+    price: number,
+  ) => void;
+};
 
+type CoffeeType = 'All Coffee' | 'Machiato' | 'Latte' | 'Americano';
+
+type filterItemType = {
+  selected: CoffeeType;
+  text: CoffeeType;
+  setSelected: (category: CoffeeType) => void; // ✅ parameter name + type
+};
+
+const FilterItem: React.FC<filterItemType> = ({ selected, text , setSelected}) => {
+
+  return (
+    <TouchableOpacity
+      style={{
+        ...styles.item,
+        backgroundColor:
+          selected === text ? '#C67C4E' : '#EDEDED59',
+      }}
+      onPress={() => setSelected(text)}
+    >
+      <Text
+        style={{
+          ...styles.coffeeTypeText,
+          alignSelf: 'center',
+          color: selected === text ? 'white' : '#313131',
+        }}
+      >
+        {text}
+      </Text>
+    </TouchableOpacity>
+
+  )
+}
+const CoffeeList: React.FC<listProps> = ({ onPress }) => {
+
+
+  const [selected, setSelected] = useState<CoffeeType>('All Coffee');
+
+  const updateSelected = (value : CoffeeType) => {
+    setSelected(value)
+  }
+
+  const ct : CoffeeType[] = ['All Coffee' ,'Machiato' ,'Latte' ,'Americano']
   const coffeeData = [
     {
       id: '1',
@@ -57,75 +103,14 @@ const CoffeeList = () => {
         horizontal
         showsHorizontalScrollIndicator={false}
       >
-        <TouchableOpacity
-          style={{
-            ...styles.item,
-            backgroundColor:
-              selected === 'All Coffee' ? '#C67C4E' : '#EDEDED59',
-          }}
-          onPress={() => setSelected('All Coffee')}
-        >
-          <Text
-            style={{
-              ...styles.coffeeTypeText,
-              alignSelf: 'center',
-              color: selected === 'All Coffee' ? 'white' : '#313131',
-            }}
-          >
-            All Coffee
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            ...styles.item,
-            backgroundColor: selected === 'Machiato' ? '#C67C4E' : '#EDEDED59',
-          }}
-          onPress={() => setSelected('Machiato')}
-        >
-          <Text
-            style={{
-              ...styles.coffeeTypeText,
-              alignSelf: 'center',
-              color: selected === 'Machiato' ? 'white' : '#313131',
-            }}
-          >
-            Machiato
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            ...styles.item,
-            backgroundColor: selected === 'Latte' ? '#C67C4E' : '#EDEDED59',
-          }}
-          onPress={() => setSelected('Latte')}
-        >
-          <Text
-            style={{
-              ...styles.coffeeTypeText,
-              alignSelf: 'center',
-              color: selected === 'Latte' ? 'white' : '#313131',
-            }}
-          >
-            Latte
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            ...styles.item,
-            backgroundColor: selected === 'Americano' ? '#C67C4E' : '#EDEDED59',
-          }}
-          onPress={() => setSelected('Americano')}
-        >
-          <Text
-            style={{
-              ...styles.coffeeTypeText,
-              alignSelf: 'center',
-              color: selected === 'Americano' ? 'white' : '#313131',
-            }}
-          >
-            Americano
-          </Text>
-        </TouchableOpacity>
+        {ct && ct.map(e => (
+          <FilterItem
+            key={e}
+            selected={selected}
+            text={e}
+            setSelected={updateSelected}
+          />
+        ))}
       </ScrollView>
       <FlatList
         data={coffeeData}
@@ -135,6 +120,7 @@ const CoffeeList = () => {
             src={item.src}
             title={item.title}
             type={item.type}
+            onPress={() => onPress(item.title, item.src, item.type, item.price)}
           />
         )}
         keyExtractor={item => item.id}
@@ -156,7 +142,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     flexDirection: 'row',
     flexGrow: 0,
-    paddingHorizontal: 10,
+    marginRight: 10,
+    paddingHorizontal: 12,
+
+
 
     height: '10%',
   },

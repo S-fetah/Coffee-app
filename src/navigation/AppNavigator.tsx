@@ -10,6 +10,7 @@ import {
   hasSeenOnboarding,
   markOnboardingComplete,
 } from '../utils/OnboardingManager';
+import DetailsScreen from '../screens/DetailsScreen';
 
 const Stack = createStackNavigator<RootStackParams>();
 
@@ -54,7 +55,10 @@ const AppNavigator: React.FC = () => {
             {() => <Landing onComplete={handleOnboardingComplete} />}
           </Stack.Screen>
         ) : (
-          <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+          <>
+            <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+            <Stack.Screen name="Details" component={DetailsScreen} />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
