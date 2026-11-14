@@ -1,119 +1,115 @@
+import React from 'react';
 import {
   View,
   Text,
   Image,
   StyleSheet,
-  useWindowDimensions,
   TouchableOpacity,
+  StatusBar,
+  useWindowDimensions,
 } from 'react-native';
-import pic from '../assests/Image/landing.png';
-import React from 'react';
+import pic from '../assets/Image/landing.png';
+import { colors } from '../theme/colors';
+import { typography } from '../theme/typography';
+import { spacing } from '../theme/spacing';
+import { scale, verticalScale, moderateScale } from '../utils/responsive';
+
 interface LandingProps {
   onComplete: () => void;
 }
+
 const Landing: React.FC<LandingProps> = ({ onComplete }) => {
   const { height } = useWindowDimensions();
 
-  const handleGetStarted = () => {
-    onComplete();
-  };
+  // Hero image takes ~55% of the total screen height
+  const heroImageHeight = height * 0.55;
 
   return (
     <View style={styles.container}>
-      <View style={{ ...styles.imgContainer, height: height / 4.2 }}>
-        <Image
-          source={pic}
-          style={{
-            ...styles.imgStyle,
-          }}
-        />
-      </View>
-      <View style={styles.body}>
-        <Text style={{ ...styles.bodyText, top: height / 4.2 }}>
-          Fall in Love With{' '}
-        </Text>
-        <Text style={{ ...styles.bodyText, top: height / 4.2 }}>
-          {' '}
-          Coffee in Blissfull
-        </Text>
-        <Text style={{ ...styles.bodyText, top: height / 4.2 }}> Delight!</Text>
-      </View>
-      <Text style={{ ...styles.pg, marginTop: height / 2.7 }}>
-        Welcome to our cozy coffee corner, where every cup is a delightful for
-        you
-      </Text>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
+      />
 
-      <TouchableOpacity style={styles.btn} onPress={handleGetStarted}>
-        <Text style={styles.btnTxt}> Get Started</Text>
-      </TouchableOpacity>
+      {/* 1. Hero Image Section */}
+      <View style={[styles.heroContainer, { height: heroImageHeight }]}>
+        <Image source={pic} style={styles.heroImage} resizeMode="cover" />
+      </View>
+
+      {/* 2. Content Section (Title, Subtitle, CTA Button) */}
+      <View style={styles.contentContainer}>
+        <View style={styles.textWrapper}>
+          <Text style={styles.title}>
+            Fall in Love with Coffee in Blissful Delight!
+          </Text>
+          <Text style={styles.subtitle}>
+            Welcome to our cozy coffee corner, where every cup is crafted with
+            passion for you.
+          </Text>
+        </View>
+
+        {/* 3. Action Button */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={onComplete}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.buttonText}>Get Started</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
-  imgStyle: {
-    position: 'absolute',
-    resizeMode: 'contain',
-    width: '100%',
-    transform: [{ scale: 1.2 }],
-  },
-  imgContainer: {
-    top: 0,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   container: {
     flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: 'black',
+    backgroundColor: colors.darkRoast,
   },
-  body: {
-    alignContent: 'center',
-    alignItems: 'center',
-    padding: 30,
+  heroContainer: {
     width: '100%',
+    overflow: 'hidden',
   },
-  bodyText: {
-    fontSize: 30,
-    fontWeight: 'semibold',
-    color: 'white',
-    textAlign: 'center',
-    fontFamily: 'Sora-VariableFont_wght',
-    letterSpacing: 0.16,
-  },
-  pg: {
-    fontFamily: 'Sora-VariableFont_wght',
-    color: 'gray',
-    textAlign: 'center',
-    padding: 20,
-    fontSize: 14,
+  heroImage: {
     width: '100%',
-    justifyContent: 'center',
-    fontWeight: '400',
+    height: '100%',
   },
-  btn: {
-    width: '90%',
-    bottom: '10%',
-    position: 'absolute',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderRadius: 10,
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+    paddingHorizontal: scale(spacing.lg), // 24 scaled horizontally
+    paddingTop: verticalScale(spacing.md),
+    paddingBottom: verticalScale(spacing.xl), // 32 scaled for bottom safe clearance
+  },
+  textWrapper: {
     alignItems: 'center',
-    left: '10%',
-    zIndex: 1,
-    padding: 20,
-    backgroundColor: '#C67C4E',
   },
-  btnTxt: {
-    color: 'white',
+  title: {
+    ...typography.h1,
+    color: colors.frothWhite,
     textAlign: 'center',
-    fontFamily: 'Sora-VariableFont_wght',
-    fontSize: 16,
-    fontWeight: '600',
-    letterSpacing: 0.4,
+    marginBottom: verticalScale(spacing.sm),
+    fontSize: moderateScale(30),
+    lineHeight: moderateScale(38),
+  },
+  subtitle: {
+    ...typography.body,
+    color: colors.mutedGrey,
+    textAlign: 'center',
+    paddingHorizontal: scale(spacing.xs),
+  },
+  button: {
+    backgroundColor: colors.espresso,
+    paddingVertical: verticalScale(16),
+    borderRadius: moderateScale(16),
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%', // Fills container evenly without manual left/right percentage math
+  },
+  buttonText: {
+    ...typography.button,
+    color: colors.frothWhite,
   },
 });
 

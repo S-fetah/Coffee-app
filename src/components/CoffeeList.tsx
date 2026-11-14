@@ -30,14 +30,16 @@ type filterItemType = {
   setSelected: (category: CoffeeType) => void; // ✅ parameter name + type
 };
 
-const FilterItem: React.FC<filterItemType> = ({ selected, text , setSelected}) => {
-
+const FilterItem: React.FC<filterItemType> = ({
+  selected,
+  text,
+  setSelected,
+}) => {
   return (
     <TouchableOpacity
       style={{
         ...styles.item,
-        backgroundColor:
-          selected === text ? '#C67C4E' : '#EDEDED59',
+        backgroundColor: selected === text ? '#C67C4E' : '#EDEDED59',
       }}
       onPress={() => setSelected(text)}
     >
@@ -51,19 +53,16 @@ const FilterItem: React.FC<filterItemType> = ({ selected, text , setSelected}) =
         {text}
       </Text>
     </TouchableOpacity>
-
-  )
-}
+  );
+};
 const CoffeeList: React.FC<listProps> = ({ onPress }) => {
-
-
   const [selected, setSelected] = useState<CoffeeType>('All Coffee');
 
-  const updateSelected = (value : CoffeeType) => {
-    setSelected(value)
-  }
+  const updateSelected = (value: CoffeeType) => {
+    setSelected(value);
+  };
 
-  const ct : CoffeeType[] = ['All Coffee' ,'Machiato' ,'Latte' ,'Americano']
+  const ct: CoffeeType[] = ['All Coffee', 'Machiato', 'Latte', 'Americano'];
   const coffeeData = [
     {
       id: '1',
@@ -103,14 +102,15 @@ const CoffeeList: React.FC<listProps> = ({ onPress }) => {
         horizontal
         showsHorizontalScrollIndicator={false}
       >
-        {ct && ct.map(e => (
-          <FilterItem
-            key={e}
-            selected={selected}
-            text={e}
-            setSelected={updateSelected}
-          />
-        ))}
+        {ct &&
+          ct.map(e => (
+            <FilterItem
+              key={e}
+              selected={selected}
+              text={e}
+              setSelected={updateSelected}
+            />
+          ))}
       </ScrollView>
       <FlatList
         data={coffeeData}
@@ -144,8 +144,6 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     marginRight: 10,
     paddingHorizontal: 12,
-
-
 
     height: '10%',
   },

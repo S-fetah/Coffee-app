@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Geolocation from 'react-native-geolocation-service';
 import Config from 'react-native-config';
 import { Search, Settings2 } from 'lucide-react-native';
-import hero from '../assests/Image/heroSection.png';
+import hero from '../assets/Image/heroSection.png';
 import CoffeeList from '../components/CoffeeList';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParams } from '../types/navigation';
