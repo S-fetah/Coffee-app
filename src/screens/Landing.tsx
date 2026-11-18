@@ -9,10 +9,14 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import pic from '../assets/Image/landing.png';
-import { colors } from '../theme/colors';
-import { typography } from '../theme/typography';
-import { spacing } from '../theme/spacing';
-import { scale, verticalScale, moderateScale } from '../utils/responsive';
+import { colors } from '../shared/theme/colors';
+import { typography } from '../shared/theme/typography';
+import { spacing } from '../shared/theme/spacing';
+import {
+  scale,
+  verticalScale,
+  moderateScale,
+} from '../shared/utils/responsive';
 
 interface LandingProps {
   onComplete: () => void;

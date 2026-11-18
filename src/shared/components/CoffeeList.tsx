@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import CoffeeCard from './CoffeeCard';
-import { CoffeePics } from '../types/constants';
+import { CoffeePics } from '../../types/constants';
+import { CoffeeItem, coffees } from '../api/database';
 
 const { width } = Dimensions.get('window'); // screen width
 
@@ -63,37 +64,6 @@ const CoffeeList: React.FC<listProps> = ({ onPress }) => {
   };
 
   const ct: CoffeeType[] = ['All Coffee', 'Machiato', 'Latte', 'Americano'];
-  const coffeeData = [
-    {
-      id: '1',
-      price: 3.15,
-      src: CoffeePics[0],
-      title: 'Caffee Mocha',
-      type: 'Deep Foam',
-    },
-    { id: '2', price: 4.2, src: CoffeePics[2], title: 'Latte', type: 'Creamy' },
-    {
-      id: '3',
-      price: 2.95,
-      src: CoffeePics[3],
-      title: 'Americano',
-      type: 'Bold',
-    },
-    {
-      id: '4',
-      price: 3.75,
-      src: CoffeePics[4],
-      title: 'Machiato',
-      type: 'Strong',
-    },
-    {
-      id: '5',
-      price: 3.75,
-      src: CoffeePics[1],
-      title: 'Flat White',
-      type: 'Espresso',
-    },
-  ];
 
   return (
     <View style={styles.container}>
@@ -113,17 +83,19 @@ const CoffeeList: React.FC<listProps> = ({ onPress }) => {
           ))}
       </ScrollView>
       <FlatList
-        data={coffeeData}
-        renderItem={({ item }) => (
+        data={coffees}
+        renderItem={({ item }: { item: CoffeeItem }) => (
           <CoffeeCard
             price={item.price}
-            src={item.src}
-            title={item.title}
-            type={item.type}
-            onPress={() => onPress(item.title, item.src, item.type, item.price)}
+            src={item.image}
+            title={item.name}
+            type={item.category}
+            onPress={() =>
+              onPress(item.name, item.image, item.category, item.price)
+            }
           />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={item => String(item.id)}
         numColumns={2}
         contentContainerStyle={styles.coffeeList}
         showsVerticalScrollIndicator={false}

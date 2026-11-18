@@ -6,7 +6,7 @@
       "@features/*": ["src/features/*"],
       "@shared/*": ["src/shared/*"],
       "@assets/*": ["src/assets/*"],
-      "@theme/*": ["src/theme/*"],
+      "@theme/*": ["src/shared/theme/*"],
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

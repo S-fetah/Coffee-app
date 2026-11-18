@@ -3,7 +3,6 @@ import {
   Text,
   Pressable,
   StyleSheet,
-  useWindowDimensions,
   Platform,
   PermissionsAndroid,
   Alert,
@@ -17,10 +16,11 @@ import Geolocation from 'react-native-geolocation-service';
 import Config from 'react-native-config';
 import { Search, Settings2 } from 'lucide-react-native';
 import hero from '../assets/Image/heroSection.png';
-import CoffeeList from '../components/CoffeeList';
+import CoffeeList from '../shared/components/CoffeeList';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParams } from '../types/navigation';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { verticalScale } from '@shared/utils/responsive';
 type locationType = {
   country: string;
   state: string;
@@ -36,8 +36,6 @@ type navigationProps = StackNavigationProp<RootStackParams>;
 const HomeScreen = () => {
   const [location, setLocation] = useState<locationType>(defaultLocation);
   const navigation = useNavigation<navigationProps>();
-
-  const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const getLocation = async (pos: any): Promise<any> => {
     const latitude = pos.coords.latitude;
@@ -92,7 +90,7 @@ const HomeScreen = () => {
       <View
         style={{
           ...styles.topView,
-          height: height / 3,
+          height: verticalScale(280),
           paddingVertical: 30 + insets.top,
         }}
       >

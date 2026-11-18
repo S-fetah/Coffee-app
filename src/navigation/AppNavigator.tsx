@@ -9,7 +9,7 @@ import MainTabNavigator from './MainTabNavigator';
 import {
   hasSeenOnboarding,
   markOnboardingComplete,
-} from '../utils/OnboardingManager';
+} from '../shared/utils/OnboardingManager';
 import DetailsScreen from '../screens/DetailsScreen';
 
 const Stack = createStackNavigator<RootStackParams>();

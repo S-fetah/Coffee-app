@@ -7,11 +7,12 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus } from 'lucide-react-native';
+import { CoffeePics } from 'src/types/constants';
 
 interface CardPropTypes {
-  src: ImageSourcePropType;
+  src: ImageSourcePropType | string;
   title: string;
   type: string;
   price: number;
@@ -30,18 +31,30 @@ const CoffeeCard: React.FC<CardPropTypes> = ({
   type,
   onPress,
 }) => {
+  const [hasError, setHasError] = useState<Boolean>(false);
+
+  const fallBackImage = CoffeePics[5];
+  const imageSource = hasError
+    ? fallBackImage
+    : typeof src === 'string'
+    ? { uri: src }
+    : src;
   return (
     <TouchableOpacity style={styles.cardContainer}>
-      <Image source={src} style={styles.cardImg} />
+      <Image
+        source={imageSource}
+        style={styles.cardImg}
+        onError={() => setHasError(true)}
+      />
       <Text style={styles.titleStyle}>{title}</Text>
       <Text style={styles.typeStyle}>{type}</Text>
       <View
         style={{
           width: '100%',
           flexDirection: 'row',
-          flexWrap: 'nowrap',
           justifyContent: 'space-between',
-          height: '15%',
+          alignItems: 'center',
+          marginTop: 'auto',
         }}
       >
         <Text style={styles.priceStyle}>$ {price}</Text>
