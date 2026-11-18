@@ -12,7 +12,9 @@ This document maps out the current structure of the application, how navigation 
 To understand mobile application navigation, it is critical to distinguish between three core building blocks: **Screen**, **Stack Navigator (`Stack.Screen`)**, and **Tab Navigator (`Tab.Screen`)**.
 
 ### 2.1 What is a Screen?
+
 A **Screen** is a standard React component that represents an entire page or viewport in your app (e.g., `HomeScreen`, `DetailsScreen`, `CartScreen`).
+
 - It renders the primary content, headers, lists, and forms for that specific view.
 - It receives navigation and route props (such as parameters passed from previous views).
 - In React Native, a screen typically fills the full window (`flex: 1`) and manages its own layout, safe-area insets, and state.
@@ -40,7 +42,9 @@ const styles = StyleSheet.create({
 ---
 
 ### 2.2 What is a Stack Navigator (`Stack.Screen`)?
+
 A **Stack Navigator** models navigation like a physical deck of cards (a LIFO: Last In, First Out stack).
+
 - **Pushing**: When you open a product detail or checkout screen, a new screen is pushed on top of the stack with a sliding transition.
 - **Popping (Back)**: When the user taps the back button or swipes from the edge, the top card is popped off to reveal the previous screen beneath it.
 - **Deep Hierarchies**: Ideal for linear user flows: `Product Card` &rarr; `Product Details` &rarr; `Cart` &rarr; `Order Confirmation`.
@@ -67,7 +71,9 @@ export const RootNavigator = () => (
 ---
 
 ### 2.3 What is a Tab Navigator (`Tab.Screen`)?
+
 A **Tab Navigator** organizes top-level destinations of your application side-by-side, usually anchored at the bottom of the screen.
+
 - **Independent State**: Switching between tabs (e.g. `Home` &rarr; `Favorites` &rarr; `Home`) preserves the scroll position and state of each tab.
 - **No Forward/Back History**: Tapping a tab jumps directly to that section rather than stacking on top of history.
 - **Parallel Worlds**: Each tab screen represents an independent peer domain of the app.
@@ -91,6 +97,7 @@ export const MainTabs = () => (
 ---
 
 ### 2.4 How They Combine (Nested Navigation Architecture)
+
 Production apps combine Stacks and Tabs into a **Nested Navigation Hierarchy**:
 
 ```
@@ -112,6 +119,7 @@ Root Stack Navigator (AppNavigator)
 ## 3. Current Application Layout & Component Tree
 
 ### Current File Inventory:
+
 ```
 src/
 ├── navigation/
@@ -141,40 +149,29 @@ src/
 │       ├── OnboardingManager.ts # AsyncStorage persistence for onboarding status
 │       └── responsive.ts      # scale, verticalScale, moderateScale layout math
 └── types/
+    ├── cart.ts                # Zustand useCartStore (items, addItem, removeItem, clearCart)
     ├── navigation.ts          # Typed route parameter dictionaries
     └── constants.ts           # Fallback images and static assets
 ```
 
 ---
 
-## 4. Current Architectural Entanglements (What Needs Correction)
+## 4. Current Architectural Entanglements & Progress
 
-### 🚨 Entanglement 1: The Card Press vs. Plus Button Dilemma
-- **Current State**: In `CoffeeCard.tsx`, the outer `<TouchableOpacity style={styles.cardContainer}>` does **not** have an `onPress` prop. Only the tiny nested `<TouchableOpacity style={styles.btnStyle}>` (the plus icon) has `onPress`.
-- **The Issue**: When a user taps anywhere on the coffee card (image, title, container), nothing happens. Users instinctively tap the card to see the product details. The `+` button in e-commerce represents "Quick Add to Cart", while the card body represents "View Details".
-- **The Solution**: 
-  - Attach `onPress` to the outer card container to navigate to `Details`.
-  - Dedicate the inner `+` button to cart addition (or an `onAddToCart` prop).
+### ✅ Entanglement 1: The Card Press vs. Plus Button
+
+- **Resolved**: Added `onPress` to the outer `<TouchableOpacity style={styles.cardContainer}>` for navigation to Details. The inner `+` button is now dedicated to cart operations.
 
 ---
 
-### 🚨 Entanglement 2: Props Parameter Type Mismatch in `CoffeeList` & `CoffeeCard`
-- **Current State**:
-  In `CoffeeList.tsx`:
-  ```tsx
-  onPress: (name: string, image: any, description: string, price: number) => void;
-  ...
-  <CoffeeCard
-    ...
-    onPress={() => onPress(item.name, item.image, item.category, item.price)}
-  />
-  ```
-- **The Issue**: `item.category` is being passed into the parameter slot named `description`! When `DetailsScreen` opens, the description shows `'Hot Coffee'` instead of the actual description text.
-- **The Solution**: Pass the entire `CoffeeItem` object (`onPress={(item) => ...}`) rather than unpacking 4 individual positional arguments. This prevents argument misalignment.
+### ✅ Entanglement 2: Props Parameter Type Mismatch
+
+- **Resolved**: `onPress` passes the complete `CoffeeItem` down the chain, avoiding positional argument mix-ups between `category` and `description`.
 
 ---
 
 ### 🚨 Entanglement 3: Nested Navigation Invocation from `HomeScreen`
+
 - **Current State**: In `HomeScreen.tsx`:
   ```tsx
   type navigationProps = StackNavigationProp<RootStackParams>;
@@ -186,17 +183,14 @@ src/
 
 ---
 
-### 🚨 Entanglement 4: `DetailsScreen.tsx` is an Unstyled Stub
-- **Current State**:
-  ```tsx
-  const DetailsScreen = () => <View><Text>DetailsScreen</Text></View>;
-  ```
-- **The Issue**: Because `AppNavigator` has `screenOptions={{ headerShown: false }}`, the screen has no default header. An unstyled `<View>` has no `flex: 1` and no background, rendering the text at (0, 0) behind the Android status bar. Even if navigation succeeds, it appears as an empty or broken screen.
-- **The Solution**: Wrap `DetailsScreen` with `SafeAreaView`, `flex: 1`, background color, back button, and extract `route.params`.
+### ✅ Entanglement 4: `DetailsScreen.tsx` Layout & Safe Area
+
+- **Resolved**: Wrapped `DetailsScreen` with `SafeAreaView`, status bar handling, cup size selector (`S`, `M`, `L`), back navigation (`goBack`), and bottom checkout bar.
 
 ---
 
 ### 🚨 Entanglement 5: Monolithic `HomeScreen.tsx` Mixing Data & UI
+
 - **Current State**: `HomeScreen.tsx` handles:
   - Reverse geolocation network fetches (`fetch('api.geoapify.com...')`)
   - Location state and Android permissions logic
@@ -211,10 +205,13 @@ src/
 
 ## 5. Architectural Corrective Roadmap for Next Steps
 
-| Priority | Task | Why It Matters |
-| :---: | :--- | :--- |
-| **P0** | Fix Card vs Button Press in `CoffeeCard.tsx` | Allows users to tap the card to navigate to Details |
-| **P0** | Pass Full `CoffeeItem` to `Details` | Fixes passing `category` instead of `description` |
-| **P1** | Flesh out `DetailsScreen.tsx` | Renders hero image, size selector (S, M, L), price, and back button |
-| **P1** | Add Safe Area & Back Button on `Details` | Prevents rendering under status bar and provides navigation back to Home |
-| **P2** | Introduce Zustand Cart Store (`useCartStore`) | Wire the `+` button to actually add items to the cart |
+| Priority | Task                                     | Detailed Goal / Implementation Plan                                                                                                                                                                              |     Status     |
+| :------: | :--------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------: |
+|  **P0**  | Card vs Button Press Separation          | Outer card navigates to Details, `+` button adds to Cart                                                                                                                                                         |  ✅ Completed  |
+|  **P0**  | Pass Full `CoffeeItem` to Details        | Clean type contract across Card &rarr; List &rarr; Details                                                                                                                                                       |  ✅ Completed  |
+|  **P1**  | Implement `DetailsScreen.tsx`            | Hero banner, cup sizes, description, back button                                                                                                                                                                 |  ✅ Completed  |
+| **P2-A** | Zustand Core Store (`src/types/cart.ts`) | Implemented `useCartStore` with `items`, `addItem`, `removeItem`, `clearCart`                                                                                                                                    |  ✅ Completed  |
+| **P2-B** | **Connect UI to Cart Store**             | 1. Wire `+` button in `CoffeeCard` &rarr; `addItem(item, 'M')`<br>2. Wire "Buy Now" button in `DetailsScreen` &rarr; `addItem(coffee, selectedSize)`<br>3. Add badge count to Tab Bar icon in `MainTabNavigator` | ⏳ **Next Up** |
+| **P2-C** | **Cart State Persistence**               | Wrap `useCartStore` with Zustand `persist` middleware (AsyncStorage / MMKV) so cart survives app restarts                                                                                                        |  ⏳ Upcoming   |
+| **P2-D** | Build Dedicated `CartScreen.tsx`         | Replace stub `ExploreScreen` with live cart view (items list, quantity +/- incrementers, total price breakdown)                                                                                                  |  ⏳ Upcoming   |
+|  **P3**  | Parallel Redux Toolkit Branch            | Switch back to `main` branch to rebuild cart logic using `@reduxjs/toolkit` and `createSlice` for direct comparison                                                                                              |   ⏳ Planned   |
