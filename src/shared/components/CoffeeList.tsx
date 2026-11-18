@@ -7,27 +7,23 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CoffeeCard from './CoffeeCard';
-import { CoffeePics } from '../../types/constants';
-import { CoffeeItem, coffees } from '../api/database';
+
+import { CoffeeItem, endpoints } from '../api/database';
+import { scale, verticalScale } from '@shared/utils/responsive';
 
 const { width } = Dimensions.get('window'); // screen width
 
 type listProps = {
-  onPress: (
-    name: string,
-    image: any,
-    description: string,
-    price: number,
-  ) => void;
+  onPress: (item: CoffeeItem) => void;
 };
 
 type CoffeeType = 'All Coffee' | 'Machiato' | 'Latte' | 'Americano';
 
 type filterItemType = {
-  selected: CoffeeType;
-  text: CoffeeType;
+  selected: string;
+  text: string;
   setSelected: (category: CoffeeType) => void; // ✅ parameter name + type
 };
 
@@ -57,18 +53,50 @@ const FilterItem: React.FC<filterItemType> = ({
   );
 };
 const CoffeeList: React.FC<listProps> = ({ onPress }) => {
-  const [selected, setSelected] = useState<CoffeeType>('All Coffee');
+  const [selected, setSelected] = useState<string>('All');
+
+  const [categories, setCategories] = useState<string[]>([]);
+
+  const [menu, setMenu] = useState<CoffeeItem[] | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchCoffee = async (): Promise<void> => {
+      try {
+        const result = await endpoints.GetCoffees('GET');
+
+        if (Array.isArray(result) && isMounted) {
+          setMenu(result);
+          setCategories([...new Set(result?.map(e => e.category))]);
+        }
+      } catch (error) {
+        console.error('fetchError: ', error);
+      }
+    };
+    fetchCoffee();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const updateSelected = (value: CoffeeType) => {
     setSelected(value);
   };
 
-  const ct: CoffeeType[] = ['All Coffee', 'Machiato', 'Latte', 'Americano'];
+  const ct: string[] = ['All', ...categories];
+
+  const displayedCoffees = menu
+    ? selected === 'All'
+      ? menu
+      : menu.filter(item => item.category === selected)
+    : [];
 
   return (
     <View style={styles.container}>
       <ScrollView
         style={styles.coffeeTypes}
+        contentContainerStyle={styles.coffeeTypesContent}
         horizontal
         showsHorizontalScrollIndicator={false}
       >
@@ -83,16 +111,14 @@ const CoffeeList: React.FC<listProps> = ({ onPress }) => {
           ))}
       </ScrollView>
       <FlatList
-        data={coffees}
+        data={displayedCoffees}
         renderItem={({ item }: { item: CoffeeItem }) => (
           <CoffeeCard
             price={item.price}
             src={item.image}
             title={item.name}
             type={item.category}
-            onPress={() =>
-              onPress(item.name, item.image, item.category, item.price)
-            }
+            onPress={() => onPress(item)}
           />
         )}
         keyExtractor={item => String(item.id)}
@@ -111,22 +137,23 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   coffeeTypes: {
-    overflow: 'hidden',
+    marginHorizontal: 12,
+    width: scale(333),
+    height: verticalScale(40),
+    marginBottom: 10,
+  },
+  coffeeTypesContent: {
     flexDirection: 'row',
-    flexGrow: 0,
-    marginRight: 10,
-    paddingHorizontal: 12,
-
-    height: '10%',
+    alignItems: 'center',
+    gap: scale(10), // 👈 Adds even spacing between all buttons!
+    paddingRight: scale(16), // Gives comfortable breathing room at the end of the scroll
   },
   item: {
-    width: width / 4,
+    paddingHorizontal: scale(14), // 👈 Expands automatically for long or short names!
+    paddingVertical: verticalScale(8),
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-
-    paddingVertical: 5,
-    borderRadius: 6,
-    marginRight: 10,
   },
   coffeeType: {
     color: '#313131',

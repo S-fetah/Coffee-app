@@ -47,7 +47,7 @@ const HomeScreen = () => {
     const data = await response.json();
 
     const { country, name, state } = data.results[0];
-    console.log(data.results);
+
     setLocation({
       country: country + ', ',
       name: name,
@@ -78,7 +78,7 @@ const HomeScreen = () => {
   }, []);
 
   useEffect(() => {
-    requestLocation();
+    // requestLocation();
   }, [requestLocation]);
 
   const HandlePress = () => {
@@ -209,12 +209,12 @@ const HomeScreen = () => {
       </View>
 
       <CoffeeList
-        onPress={(name, image, description, price) =>
+        onPress={item =>
           navigation.navigate('Details', {
-            description,
-            image,
-            name,
-            price,
+            name: item.name,
+            price: item.price,
+            image: item.image,
+            description: item.description,
           })
         }
       />

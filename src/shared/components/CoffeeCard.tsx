@@ -9,19 +9,14 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react-native';
-import { CoffeePics } from 'src/types/constants';
-
+import { CoffeePics } from '../../types/constants';
+import { CoffeeItem } from '@shared/api/database';
 interface CardPropTypes {
   src: ImageSourcePropType | string;
   title: string;
   type: string;
   price: number;
-  onPress: (
-    name: string,
-    image: any,
-    description: string,
-    price: number,
-  ) => void;
+  onPress: () => void;
 }
 const { width, height } = Dimensions.get('window');
 const CoffeeCard: React.FC<CardPropTypes> = ({
@@ -40,7 +35,7 @@ const CoffeeCard: React.FC<CardPropTypes> = ({
     ? { uri: src }
     : src;
   return (
-    <TouchableOpacity style={styles.cardContainer}>
+    <TouchableOpacity style={styles.cardContainer} onPress={onPress}>
       <Image
         source={imageSource}
         style={styles.cardImg}
@@ -58,10 +53,8 @@ const CoffeeCard: React.FC<CardPropTypes> = ({
         }}
       >
         <Text style={styles.priceStyle}>$ {price}</Text>
-        <TouchableOpacity
-          style={styles.btnStyle}
-          onPress={() => onPress(title, src, type, price)}
-        >
+
+        <TouchableOpacity style={styles.btnStyle}>
           <Plus size={20} color={'white'} strokeWidth={1.3} />
         </TouchableOpacity>
       </View>

@@ -1,12 +1,13 @@
 {
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@features/*": ["src/features/*"],
       "@shared/*": ["src/shared/*"],
       "@assets/*": ["src/assets/*"],
-      "@theme/*": ["src/shared/theme/*"],
+      "@theme/*": ["src/shared/theme/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

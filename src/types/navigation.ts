@@ -1,7 +1,9 @@
+import { CoffeeItem } from '@shared/api/database';
+
 export type RootStackParams = {
   Landing: undefined;
   MainTabs: undefined;
-  Details: { name: string; description: string; price: number; image: any };
+  Details: CoffeeItem; //{ name: string; description: string; price: number; image: any };
 };
 
 export type MainTabsParams = {

@@ -3,7 +3,7 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { resetOnboarding } from './src/shared/utils/OnboardingManager';
 import Config from 'react-native-config';
 function App() {
-  resetOnboarding();
+  // resetOnboarding();
   return (
     <ErrorBoundary>
       <AppNavigator />

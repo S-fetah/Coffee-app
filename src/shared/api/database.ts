@@ -153,13 +153,15 @@ export const coffees: CoffeeItem[] = [
 const delay = (ms: number) =>
   new Promise<void>(resolve => setTimeout(resolve, ms));
 
-const endpoints = {
+export const endpoints = {
   //get coffes
   GetCoffees: async (
-    id: number,
     METHOD: string,
+    id?: number,
   ): Promise<Error | CoffeeItem[]> => {
     if (METHOD && METHOD !== 'GET') throw new Error('Method not allowed');
+
+    await delay(Math.floor(Math.random() * 601 + 400));
 
     if (Math.random() < 0.05) {
       throw new Error('500 Internal Server Error: Network drop');
@@ -178,6 +180,7 @@ const endpoints = {
     if (!details.METHOD || details.METHOD !== 'POST') {
       throw new Error('Method not allowed');
     }
+    await delay(Math.floor(Math.random() * 601 + 400));
 
     if (Math.random() < 0.05) {
       throw new Error('500 Internal Server Error: Network drop');
@@ -187,4 +190,4 @@ const endpoints = {
 
     return details.id;
   },
-};
+} as const;
